@@ -1,12 +1,6 @@
 library(MASS)
 
 Get_result_binary_tree_gaussian <- function(n_rep, n, h = 500, seq_length, type){
-  # theta_dist: 'constant', 'rexp', 'rexp square'
-  # n_rep: replicate time
-  # n: number of leaf nodes
-  # h: expansion dimension
-  
-  # k: number of internal nodes
   nmethods = 2
   nseq = length(seq_length)
   RF_dist <-matrix(0, n_rep, nseq*nmethods)
