@@ -1,5 +1,7 @@
 library(ape)
 library(igraph)
+library(phangorn)
+library(NetworkToolbox)
 
 
 Get_rb = function(n, type){

@@ -20,13 +20,6 @@ sequence_len <- rep(seq_length, 2)
 cater_df <- data.frame(mean = mean, sd = sd, sequence_len = sequence_len, method = method)
 cater_df$tree <- rep("caterpillar", nrow(cater_df))
 
-# ggplot(cater_df, aes(x=sequence_len, y=mean, colour=method, shape = method)) + 
-#   geom_line() +
-#   geom_point() +
-#   labs(y= "RF distance", x = "number of samples used to estimate D")+
-#   scale_color_manual(values=c('#999999','#E69F00'))+
-#   labs(y= "RF distance", x = "sequence length")+
-#   theme_classic()
 
 
 # balanced binary
@@ -46,13 +39,6 @@ sequence_len <- rep(seq_length, 2)
 balance_df <- data.frame(mean = mean, sd = sd, sequence_len = sequence_len, method = method)
 balance_df$tree <- rep("balanced binary", nrow(balance_df))
 
-# ggplot(balance_df, aes(x=sequence_len, y=mean, colour=method, shape = method)) + 
-#   geom_line() +
-#   geom_point() +
-#   labs(y= "RF distance", x = "number of samples used to estimate D")+
-#   scale_color_manual(values=c('#999999','#E69F00'))+
-#   labs(y= "RF distance", x = "sequence length")+
-#   theme_classic()
 
 # random non-binary
 
@@ -71,14 +57,6 @@ sequence_len <- rep(seq_length, 4)
 random_non_binary_df <- data.frame(mean = mean, sd = sd, sequence_len = sequence_len, method = method)
 random_non_binary_df$tree <- rep(c("non-binary", "non-binary (k unknown)", "non-binary", "non-binary (k unknown)"), each = 7)
 
-# ggplot(random_non_binary_df, aes(x=sequence_len, y=mean, colour=method, shape = method)) + 
-#   geom_line() +
-#   geom_point() +
-#   facet_wrap(~tree, scales = "free_x")+ 
-#   labs(y= "RF distance", x = "sequence length")+
-#   scale_x_continuous(trans='log2') +
-#   scale_color_manual(values=c('#999999','#E69F00'))+
-#   theme_classic()
 
 
 # combine into one dataframe
@@ -91,14 +69,16 @@ saveRDS(all, file = "data/all_simu_results.RDS")
 library(ggplot2)
 library(ggh4x)
 
-pdf(file = "plots/binary_cater_multi_gaussian.pdf",   # The directory you want to save the file in
-    width = 8, # The width of the plot in inches
+# uncomment this line to directly read simulation results
+# all <- readRDS("data/all_simu_results.RDS")
+
+pdf(file = "plots/binary_cater_multi_gaussian.pdf",   
+    width = 8, 
     height = 2)
 ggplot(all, aes(x=sequence_len, y=mean, colour=method, shape = method)) + 
   geom_line() +
   geom_point() +
   facet_wrap(~tree, scales = "free_x", nrow = 1)+
-  # geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd),position=position_dodge(0.5))+
   facetted_pos_scales(
     x = list(
       tree == "non-binary" ~ scale_x_continuous(trans='log2'),
@@ -106,7 +86,6 @@ ggplot(all, aes(x=sequence_len, y=mean, colour=method, shape = method)) +
     )
   )+
   labs(y= "RF distance", x = "number of samples used to estimate D")+
-  #scale_x_continuous(trans='log2') +
   scale_color_manual(values=c('#999999','#E69F00'))+
   theme_classic()+
   theme( axis.text = element_text( size = 10 ),
@@ -118,6 +97,8 @@ ggplot(all, aes(x=sequence_len, y=mean, colour=method, shape = method)) +
 dev.off()
 
 # error bar 
+
+library(tidyr)
 
 t(spread(all[all$tree=='caterpillar',-c(1, 5)], method, sd))
 
